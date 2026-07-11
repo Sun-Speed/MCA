@@ -9,6 +9,7 @@ import { useLabSession } from "../../context/LabSessionContext";
 import { useAuth } from "../../context/AuthContext";
 import { useAssignments } from "../../context/AssignmentContext";
 import { useProjects } from "../../context/ProjectContext";
+import { FolderKanban, FileText, Clock3, Users, FlaskConical, ComputerIcon } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,13 +46,13 @@ const Dashboard = () => {
   ).length;
 
   const pendingAssignments = assignments.reduce(
-  (count, assignment) =>
-    count +
-    assignment.assignedStudents.filter(
-      (student) => student.status !== "EVALUATED",
-    ).length,
-  0,
-);
+    (count, assignment) =>
+      count +
+      assignment.assignedStudents.filter(
+        (student) => student.status !== "EVALUATED",
+      ).length,
+    0,
+  );
 
   const myProjects = projects.filter(
     (project) => project.teacherId === teacher.id,
@@ -92,118 +93,204 @@ const Dashboard = () => {
     <DashboardLayout title="Teacher Dashboard">
       {/* Header */}
 
-      <div className="bg-white border rounded-xl p-6 shadow-sm mb-8">
-        <h1 className="text-3xl font-bold">Welcome, {teacher?.name} 👋</h1>
+      <div className="relative overflow-hidden bg-white border border-gray-100 rounded-3xl p-10 mb-8 shadow-sm">
+        {/* Subtle decorative background element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-[80px] -mr-16 -mt-16 opacity-60" />
 
-        <p className="text-gray-500 mt-2">
-          Manage your labs, attendance, projects and assignments.
-        </p>
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-black uppercase tracking-widest mb-4">
+            <span>Faculty Portal</span>
+          </div>
+
+          <h1 className="text-5xl font-black text-gray-900 tracking-tight">
+            Welcome back, {teacher?.name || "Teacher"} 👋
+          </h1>
+
+          <p className="mt-4 text-gray-500 text-lg max-w-xl leading-relaxed">
+            You're looking at your institutional dashboard. Monitor your labs,
+            attendance, ongoing projects, and assignment queues.
+          </p>
+        </div>
       </div>
 
       {/* Statistics */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
-          <p className="text-blue-600 font-semibold">Students</p>
-
-          <h2 className="text-4xl font-bold mt-3">{totalStudents}</h2>
-        </div>
-
-        <div className="bg-green-50 border border-green-200 rounded-xl p-5">
-          <p className="text-green-600 font-semibold">My Labs</p>
-
-          <h2 className="text-4xl font-bold mt-3">{assignedLabs.length}</h2>
-        </div>
-
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
-          <p className="text-purple-600 font-semibold">Sessions</p>
-
-          <h2 className="text-4xl font-bold mt-3">{completedSessions}</h2>
-        </div>
-
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5">
-          <p className="text-yellow-600 font-semibold">Pending Assignments</p>
-
-          <h2 className="text-4xl font-bold mt-3">{pendingAssignments}</h2>
-        </div>
-
-        <div className="bg-red-50 border border-red-200 rounded-xl p-5">
-          <p className="text-red-600 font-semibold">Pending Projects</p>
-
-          <h2 className="text-4xl font-bold mt-3">{pendingProjects}</h2>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+        {[
+          {
+            label: "My Students",
+            val: totalStudents,
+            bg: "bg-blue-50",
+            text: "text-blue-700",
+            border: "border-blue-100",
+          },
+          {
+            label: "My Labs",
+            val: assignedLabs.length,
+            bg: "bg-emerald-50",
+            text: "text-emerald-700",
+            border: "border-emerald-100",
+          },
+          {
+            label: "My Sessions",
+            val: completedSessions,
+            bg: "bg-violet-50",
+            text: "text-violet-700",
+            border: "border-violet-100",
+          },
+          {
+            label: "Pending Assignments",
+            val: pendingAssignments,
+            bg: "bg-amber-50",
+            text: "text-amber-700",
+            border: "border-amber-100",
+          },
+          {
+            label: "Pending Projects",
+            val: pendingProjects,
+            bg: "bg-rose-50",
+            text: "text-rose-700",
+            border: "border-rose-100",
+          },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            className={`${stat.bg} ${stat.border} border-2 rounded-3xl p-6 transition-transform hover:scale-[1.02]`}
+          >
+            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">
+              {stat.label}
+            </p>
+            <h2 className={`text-4xl font-black ${stat.text}`}>{stat.val}</h2>
+          </div>
+        ))}
       </div>
 
       {/* Quick Actions */}
 
-      <div className="bg-white border rounded-xl p-6 shadow-sm mb-10">
-        <h2 className="text-2xl font-bold mb-5">Quick Actions</h2>
+      <div className="bg-white border border-gray-100 rounded-3xl p-8 mb-10 shadow-sm">
+        <h2 className="text-2xl font-black text-gray-900 mb-8 tracking-tight">
+          Quick Actions
+        </h2>
 
-        <div className="flex flex-wrap gap-4">
-          <button
-            onClick={() => navigate("/teacher/projects")}
-            className="px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Projects
-          </button>
-
-          <button
-            onClick={() => navigate("/teacher/assignments")}
-            className="px-6 py-3 rounded-lg bg-green-600 text-white hover:bg-green-700"
-          >
-            Assignments
-          </button>
-
-          <button
-            onClick={() => navigate("/teacher/sessions")}
-            className="px-6 py-3 rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-          >
-            Session History
-          </button>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            {
+              label: "Projects",
+              path: "/teacher/projects",
+              icon: <FolderKanban size={24} />,
+              color:
+                "bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border-indigo-100",
+            },
+            {
+              label: "Assignments",
+              path: "/teacher/assignments",
+              icon: <FileText size={24} />,
+              color:
+                "bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-100",
+            },
+            {
+              label: "Session Log",
+              path: "/teacher/sessions",
+              icon: <Clock3 size={24} />,
+              color:
+                "bg-violet-50 text-violet-600 hover:bg-violet-100 border-violet-100",
+            },
+            {
+              label: "Students",
+              path: "/teacher/students",
+              icon: <Users size={24} />,
+              color:
+                "bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-100",
+            },
+          ].map((action, i) => (
+            <button
+              key={i}
+              onClick={() => navigate(action.path)}
+              className={`flex flex-col items-center justify-center gap-3 p-6 rounded-3xl border-2 transition-all duration-300 hover:scale-[1.02] ${action.color}`}
+            >
+              {action.icon}
+              <span className="font-black uppercase tracking-widest text-[10px]">
+                {action.label}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* My Labs */}
 
-      <h2 className="text-2xl font-bold mb-6">My Assigned Labs</h2>
+      <div className="mb-10">
+        <h2 className="text-2xl font-black text-gray-900 mb-8 tracking-tight">
+          My Assigned Labs
+        </h2>
 
-      {assignedLabs.length === 0 ? (
-        <div className="bg-white border rounded-xl p-8 text-center text-gray-500">
-          No Lab Assigned
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {assignedLabs.map((lab) => (
-            <div
-              key={lab.id}
-              className="bg-white border rounded-xl shadow-sm hover:shadow-lg transition p-6"
-            >
-              <h3 className="text-xl font-bold mb-3">{lab.labName}</h3>
+        {assignedLabs.length === 0 ? (
+          <div className="bg-white border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center text-gray-400 font-bold uppercase tracking-widest">
+            No Labs Assigned
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {assignedLabs.map((lab, index) => {
+              // High-end, vibrant gradients for each card
+              const gradients = [
+                "from-blue-50 to-indigo-50 border-blue-200 shadow-blue-100",
+                "from-emerald-50 to-teal-50 border-emerald-200 shadow-emerald-100",
+                "from-violet-50 to-purple-50 border-violet-200 shadow-violet-100",
+                "from-rose-50 to-pink-50 border-rose-200 shadow-rose-100",
+                "from-amber-50 to-orange-50 border-amber-200 shadow-amber-100",
+              ];
+              const gradient = gradients[index % gradients.length];
 
-              <div className="space-y-2 text-gray-600">
-                <p>
-                  <strong>Department :</strong> {lab.department}
-                </p>
+              return (
+                <div
+                  key={lab.id}
+                  className={`group bg-gradient-to-br ${gradient} border-2 rounded-[2rem] p-8 shadow-xl transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl`}
+                >
+                  {/* Lab Header with Icon */}
+                  <div className="flex justify-between items-start mb-8">
+                    <div className="p-3 bg-white/60 rounded-2xl shadow-sm border border-white">
+                      <ComputerIcon size={24} className="text-gray-800" />
+                    </div>
+                    <span className="text-[10px] font-black bg-white px-3 py-1 rounded-full shadow-sm uppercase tracking-widest text-gray-500">
+                      {lab.department}
+                    </span>
+                  </div>
 
-                <p>
-                  <strong>Semester :</strong> {lab.assignedSemester}
-                </p>
+                  <h3 className="text-2xl font-black text-gray-900 mb-6">
+                    {lab.labName}
+                  </h3>
 
-                <p>
-                  <strong>Section :</strong> {lab.assignedSection}
-                </p>
-              </div>
+                  <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="bg-white/40 p-3 rounded-2xl border border-white/50">
+                      <p className="text-[9px] font-black uppercase opacity-50 mb-0.5">
+                        Semester
+                      </p>
+                      <p className="font-bold text-gray-900">
+                        {lab.assignedSemester}
+                      </p>
+                    </div>
+                    <div className="bg-white/40 p-3 rounded-2xl border border-white/50">
+                      <p className="text-[9px] font-black uppercase opacity-50 mb-0.5">
+                        Section
+                      </p>
+                      <p className="font-bold text-gray-900">
+                        {lab.assignedSection}
+                      </p>
+                    </div>
+                  </div>
 
-              <button
-                onClick={() => handleStartSession(lab)}
-                className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3"
-              >
-                Start Today's Session
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                  <button
+                    onClick={() => handleStartSession(lab)}
+                    className="w-full bg-gray-900 text-white rounded-2xl py-4 font-black uppercase tracking-widest text-xs shadow-lg hover:bg-gray-800 transition-all active:scale-95"
+                  >
+                    Start Lab
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   );
 };

@@ -1,7 +1,10 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useClerks } from "../../context/ClerkContext";
+
+import { User, Mail, Hash, Building2, X } from "lucide-react";
 
 const initialState = {
   name: "",
@@ -104,55 +107,59 @@ const ClerkForm = ({
   };
 
   return (
-    <form
-      onSubmit={submit}
-      className="border p-5 rounded space-y-3"
-    >
-      <h2 className="text-xl font-bold">
-        {editingClerk
-          ? "Edit Clerk"
-          : "Add Clerk"}
-      </h2>
 
-      <input
-        className="border p-2 w-full"
-        placeholder="Clerk Name"
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-      />
-
-      <input
-        className="border p-2 w-full"
-        placeholder="Email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-      />
-
-      <input
-        className="border p-2 w-full"
-        placeholder="Employee ID"
-        name="employeeId"
-        value={form.employeeId}
-        onChange={handleChange}
-      />
-
-      <input
-        className="border p-2 w-full"
-        placeholder="Department"
-        name="department"
-        value={form.department}
-        onChange={handleChange}
-      />
-
-      <button
-        type="submit"
-        className="border px-4 py-2"
+    <form onSubmit={submit} className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 space-y-6">
+  {/* Header with optional close button */}
+  <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+    <h2 className="text-xl font-bold text-gray-800">
+      {editingClerk ? "Edit Clerk Details" : "Add New Clerk"}
+    </h2>
+    {editingClerk && (
+      <button 
+        type="button" 
+        onClick={() => setEditingClerk(null)} 
+        className="text-gray-400 hover:text-red-500 transition-colors"
       >
-        Save Clerk
+        <X size={20} />
       </button>
-    </form>
+    )}
+  </div>
+
+  {/* Form Fields */}
+  {[
+    { name: "name", placeholder: "Clerk Name", icon: User },
+    { name: "email", placeholder: "Email Address", icon: Mail },
+    { name: "employeeId", placeholder: "Employee ID", icon: Hash },
+    { name: "department", placeholder: "Department", icon: Building2 },
+  ].map((field) => {
+    const Icon = field.icon;
+    return (
+      <div key={field.name} className="relative group">
+        <div className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+          <Icon size={18} />
+        </div>
+        <input
+          className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none bg-white placeholder:text-gray-400"
+          placeholder={field.placeholder}
+          name={field.name}
+          value={form[field.name]}
+          onChange={handleChange}
+          required
+        />
+      </div>
+    );
+  })}
+
+  {/* Action Button */}
+  <motion.button
+    whileHover={{ scale: 1.01 }}
+    whileTap={{ scale: 0.99 }}
+    type="submit"
+    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-200 transition-all"
+  >
+    {editingClerk ? "Update Clerk Record" : "Save Clerk Profile"}
+  </motion.button>
+</form>
   );
 };
 

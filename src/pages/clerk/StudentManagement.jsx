@@ -4,6 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 
 import StudentForm from "../../components/student/StudentForm";
 import StudentTable from "../../components/student/StudentTable";
+import { useStudents } from "../../context/StudentContext";
 
 const menu = [
   {
@@ -17,8 +18,9 @@ const menu = [
 ];
 
 const StudentManagement = () => {
-  const [editingStudent, setEditingStudent] =
-    useState(null);
+
+  const { students } = useStudents();
+  const [editingStudent, setEditingStudent] = useState(null);
 
   return (
     <DashboardLayout
@@ -41,8 +43,9 @@ const StudentManagement = () => {
         <div className="col-span-8">
 
           <StudentTable
-            onEdit={setEditingStudent}
-          />
+  students={students}
+  onEdit={setEditingStudent}
+/>
 
         </div>
 

@@ -1,55 +1,71 @@
 import { useLabs } from "../../context/LabContext";
 
+import { Trash2, FlaskConical, Building2, Users } from "lucide-react";
+
 const LabTable = () => {
   const { labs, deleteLab } = useLabs();
 
-  console.log(labs);
-
   return (
-    <div className="border p-5">
-      <h2 className="text-xl font-bold mb-4">Labs</h2>
+    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-gray-50 flex justify-between items-center">
+        <h2 className="text-xl font-bold text-gray-800">Laboratory Registry</h2>
+        <span className="text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full">{labs.length} Active Labs</span>
+      </div>
 
       {labs.length === 0 ? (
-        <p>No labs added</p>
+        <div className="p-12 text-center text-gray-400">
+          <FlaskConical size={48} className="mx-auto mb-4 opacity-20" />
+          <p>No laboratories found. Add your first lab to get started.</p>
+        </div>
       ) : (
-        <table className="w-full border">
-          <thead>
-            <tr>
-              <th className="border p-2">Code</th>
-
-              <th className="border p-2">Name</th>
-
-              <th className="border p-2">Department</th>
-
-              <th className="border p-2">Capacity</th>
-
-              <th className="border p-2">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {labs.map((lab) => (
-              <tr key={lab.id}>
-                <td className="border p-2">{lab.labCode}</td>
-
-                <td className="border p-2">{lab.labName}</td>
-
-                <td className="border p-2">{lab.department}</td>
-
-                <td className="border p-2">{lab.capacity}</td>
-
-                <td className="border p-2">
-                  <button
-                    onClick={() => deleteLab(lab.id)}
-                    className="border px-3 py-1"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="text-xs uppercase tracking-wider text-gray-500 bg-gray-50/50">
+                <th className="px-6 py-4 font-bold">Lab Details</th>
+                <th className="px-6 py-4 font-bold">Department</th>
+                <th className="px-6 py-4 font-bold">Capacity</th>
+                <th className="px-6 py-4 font-bold text-right">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {labs.map((lab) => (
+                <tr key={lab.id} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                        <FlaskConical size={20} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-800">{lab.labName}</p>
+                        <p className="text-xs text-gray-500 font-mono">{lab.labCode}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                      {lab.department}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Users size={16} className="text-gray-400" />
+                      {lab.capacity}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => deleteLab(lab.id)}
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

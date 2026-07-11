@@ -16,6 +16,8 @@ const Login = () => {
 
   const [error, setError] = useState("");
 
+  const [loginType, setLoginType] = useState('Admin'); // 'Admin' or 'Student'
+
   useEffect(() => {
     if (!currentUser) return;
 
@@ -70,60 +72,57 @@ const Login = () => {
   };
 
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold mb-6">Smart Lab Login</h1>
-
-      <form onSubmit={handleLogin} className="flex flex-col gap-4 max-w-md">
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="border p-2"
-        >
-          <option value="hod">Head Of Department</option>
-
-          <option value="teacher">Teacher</option>
-
-          <option value="clerk">Clerk</option>
-        </select>
-
-        <input
-          className="border p-2"
-          placeholder="Email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-        />
-
-        <input
-          type="password"
-          className="border p-2"
-          placeholder="Password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-        />
-
-        {error && <p className="text-red-500">{error}</p>}
-
-        <button className="border p-2" type="submit">
-          Login
-        </button>
-
-        <button type="button" className="border p-2" onClick={fillDemo}>
-          Fill Demo Credentials
-        </button>
-      </form>
-
-      <div className="mt-10">
-        <h2 className="font-bold">Demo Accounts</h2>
-
-        <p>HOD → hod@gmail.com / 123456</p>
-
-        <p>Teacher → teacher@gmail.com / 123456</p>
-
-        <p>Clerk → clerk@gmail.com / 123456</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+  <div className="bg-white border border-gray-100 rounded-3xl p-10 shadow-xl w-full max-w-md">
+    <div className="mb-8 text-center">
+      <h1 className="text-2xl font-black text-gray-900 tracking-tight">Smart Lab</h1>
+      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Select your access portal</p>
     </div>
+
+    {/* Toggle Tabs */}
+    <div className="flex bg-gray-100 p-1 rounded-2xl mb-8">
+      {['Admin', 'Student'].map((t) => (
+        <button
+          key={t}
+          onClick={() => setLoginType(t)}
+          className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${
+            loginType === t ? "bg-violet-600 text-white shadow-lg" : "text-gray-500"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+
+    <form onSubmit={handleLogin} className="flex flex-col gap-4">
+      {loginType === 'Admin' ? (
+        <>
+          <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full border-2 border-gray-100 rounded-2xl p-4 font-bold text-sm outline-none focus:border-violet-600">
+            <option value="hod">Head Of Department</option>
+            <option value="teacher">Teacher</option>
+            <option value="clerk">Clerk</option>
+          </select>
+          <input className="w-full border-2 border-gray-100 rounded-2xl p-4 font-bold text-sm outline-none focus:border-violet-600" placeholder="Email" name="email" value={form.email} onChange={handleChange} />
+        </>
+      ) : (
+        <input className="w-full border-2 border-gray-100 rounded-2xl p-4 font-bold text-sm outline-none focus:border-violet-600" placeholder="University Seat Number (USN)" name="usn" value={form.usn} onChange={handleChange} />
+      )}
+
+      <input type="password" className="w-full border-2 border-gray-100 rounded-2xl p-4 font-bold text-sm outline-none focus:border-violet-600" placeholder="Password" name="password" value={form.password} onChange={handleChange} />
+
+      {error && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{error}</p>}
+
+      <button type="submit" className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-violet-600 transition-all shadow-lg active:scale-95">
+        Login to {loginType} Portal
+      </button>
+    </form>
+    
+    {/* Demo Section */}
+    <div className="mt-8 border-t pt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
+      Demo → Admin: hod@gmail.com | Student: 1US21CS001
+    </div>
+  </div>
+</div>
   );
 };
 

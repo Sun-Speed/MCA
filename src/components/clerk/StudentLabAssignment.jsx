@@ -200,92 +200,105 @@ const StudentLabAssignment = () => {
   };
 
   return (
-    <div className="border rounded p-6 bg-white">
-      <h2 className="text-2xl font-bold mb-6">Assign Lab To Students</h2>
+    <div className="bg-white border border-gray-100 rounded-3xl p-10 shadow-sm">
+      {/* Header Section */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+          Assign Laboratory
+        </h2>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+          Configure lab sessions and bulk enrollment
+        </p>
+      </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      {/* Filter Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <Select
           label="Department"
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-          options={DEPARTMENTS.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={DEPARTMENTS.map((i) => ({ label: i, value: i }))}
         />
-
         <Select
           label="Semester"
           value={semester}
           onChange={(e) => setSemester(e.target.value)}
-          options={SEMESTERS.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={SEMESTERS.map((i) => ({ label: i, value: i }))}
         />
-
         <Select
           label="Section"
           value={section}
           onChange={(e) => setSection(e.target.value)}
-          options={SECTIONS.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={SECTIONS.map((i) => ({ label: i, value: i }))}
         />
       </div>
 
-      <div className="mt-6">
-        <p className="font-semibold">
-          Students Found : {filteredStudents.length}
-        </p>
+      {/* Lab Selection & Action */}
+      <div className="bg-gray-50 border-2 border-dashed border-gray-200 p-8 rounded-3xl">
+        <div className="flex flex-col md:flex-row gap-6 items-end">
+          <div className="flex-1 w-full">
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 block">
+              Target Laboratory
+            </label>
+            <select
+              className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 font-black text-sm focus:border-indigo-500 outline-none transition-all"
+              value={labId}
+              onChange={(e) => setLabId(e.target.value)}
+            >
+              <option value="">Select an available lab...</option>
+              {availableLabs.map((lab) => (
+                <option key={lab.id} value={lab.id}>
+                  {lab.labName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            onClick={assignLabToStudents}
+            disabled={!labId || filteredStudents.length === 0}
+            className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg active:scale-95"
+          >
+            Assign to {filteredStudents.length} Students
+          </button>
+        </div>
       </div>
 
-      <div className="mt-6">
-        <label className="block mb-2 font-semibold">Select Lab</label>
-
-        <select
-          className="border p-2 rounded w-full"
-          value={labId}
-          onChange={(e) => setLabId(e.target.value)}
-        >
-          <option value="">Select Lab</option>
-
-          {availableLabs.map((lab) => (
-            <option key={lab.id} value={lab.id}>
-              {lab.labName}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button
-        onClick={assignLabToStudents}
-        disabled={!labId || filteredStudents.length === 0}
-        className="border rounded px-6 py-2 mt-6"
-      >
-        Assign Lab To All Students
-      </button>
-
-      <div className="mt-8">
-        <h3 className="text-xl font-bold mb-4">Selected Students</h3>
+      {/* Students List */}
+      <div className="mt-12">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-black text-gray-900">
+            Eligible Students
+          </h3>
+          <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">
+            {filteredStudents.length} Records
+          </span>
+        </div>
 
         {filteredStudents.length === 0 ? (
-          <p>No students found.</p>
+          <div className="text-center py-16 border-2 border-dashed border-gray-100 rounded-3xl">
+            <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">
+              No students match current filters.
+            </p>
+          </div>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredStudents.map((student) => (
               <div
                 key={student.id}
-                className="border rounded p-3 flex justify-between"
+                className="bg-white border border-gray-500 p-5 rounded-2xl flex items-center justify-between hover:border-indigo-200 transition-colors"
               >
                 <div>
-                  <p className="font-semibold">{student.name}</p>
-
-                  <p className="text-sm">{student.usn}</p>
+                  <p className="font-black text-gray-900 text-sm">
+                    {student.name}
+                  </p>
+                  <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                    {student.usn}
+                  </p>
                 </div>
-
-                <div>Assigned Labs : {student.assignedLabs?.length || 0}</div>
+                <div className="text-[9px] font-black bg-gray-100 text-gray-500 px-3 py-1 rounded-lg">
+                  {student.assignedLabs?.length || 0} LABS
+                </div>
               </div>
             ))}
           </div>

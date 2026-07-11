@@ -8,12 +8,7 @@ const Input = ({
 }) => {
   return (
     <div className="flex flex-col gap-1">
-
-      {label && (
-        <label className="font-medium">
-          {label}
-        </label>
-      )}
+      {label && <label className="font-medium">{label}</label>}
 
       <input
         type={type}
@@ -23,7 +18,6 @@ const Input = ({
         placeholder={placeholder}
         className="border p-2 rounded"
       />
-
     </div>
   );
 };
