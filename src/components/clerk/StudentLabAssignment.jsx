@@ -175,7 +175,7 @@ const StudentLabAssignment = () => {
       String(lab.assignedSemester) === String(semester),
   );
 
-  const assignLabToStudents = () => {
+  const assignLabToStudents = async () => {
     if (!labId) {
       alert("Please select a lab.");
       return;
@@ -186,17 +186,33 @@ const StudentLabAssignment = () => {
       return;
     }
 
-    filteredStudents.forEach((student) => {
-      const assignedLabs = student.assignedLabs || [];
+    const studentsToUpdate = filteredStudents.filter(
+      (student) => !(student.assignedLabs || []).includes(labId),
+    );
 
-      if (!assignedLabs.includes(labId)) {
-        updateStudent(student.id, {
-          assignedLabs: [...assignedLabs, labId],
-        });
-      }
-    });
+    if (studentsToUpdate.length === 0) {
+      alert("All filtered students are already assigned to this lab.");
+      return;
+    }
 
-    alert("Lab assigned successfully.");
+    try {
+      await Promise.all(
+        studentsToUpdate.map((student) =>
+          updateStudent(student.id, {
+            assignedLabs: [...(student.assignedLabs || []), labId],
+          }),
+        ),
+      );
+
+      alert(
+        `Successfully assigned ${studentsToUpdate.length} students to the lab.`,
+      );
+    } catch (error) {
+      console.error("Lab assignment failed:", error);
+      alert(
+        "Some lab assignments may not have been saved. Please refresh the student list and check the backend.",
+      );
+    }
   };
 
   return (

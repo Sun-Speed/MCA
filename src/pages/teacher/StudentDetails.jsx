@@ -23,14 +23,16 @@ const StudentDetails = () => {
   const { assignments, updateAssignment } = useAssignments();
 
   const student = getStudentById(id);
+  console.log(student);
+  
 
-  const [performance, setPerformance] = useState(
-    student.activities.labPerformance || {
-      rating: "GOOD",
+  // const [performance, setPerformance] = useState(
+  //   student.activities.labPerformance || {
+  //     rating: "GOOD",
 
-      teacherRemarks: "",
-    },
-  );
+  //     teacherRemarks: "",
+  //   },
+  // );
 
   if (!student) {
     return (

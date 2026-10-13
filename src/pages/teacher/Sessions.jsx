@@ -10,6 +10,8 @@ const Sessions = () => {
     
   const { sessions } = useLabSession();
 
+  console.log("my sessions", sessions);
+
   return (
 
 <DashboardLayout title="Session History">

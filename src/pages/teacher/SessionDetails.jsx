@@ -13,6 +13,9 @@ const SessionDetails = () => {
 
   const session = getSession(id);
 
+  console.log("com", session);
+  
+
   if (!session) {
     return <DashboardLayout title="Session">Session Not Found</DashboardLayout>;
   }
